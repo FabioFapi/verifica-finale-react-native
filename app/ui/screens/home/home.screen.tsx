@@ -40,7 +40,6 @@ interface Props {
 const HomeScreen = ({ navigation }: Props) => {
   const [carts, setCarts] = useState<Cart[]>([]);
 
-  // ** CALLBACKS ** //
 
   const renderItem = useCallback<ListRenderItem<Cart>>(
     ({ item }) => {
@@ -48,6 +47,10 @@ const HomeScreen = ({ navigation }: Props) => {
         <Card
           cart={item}
           onPress={() => {
+            if (!item.id) {
+              return;
+            }
+
             navigation.navigate(Screen.Detail, {
               id: item.id,
             });
@@ -60,7 +63,6 @@ const HomeScreen = ({ navigation }: Props) => {
 
   const ItemSeparatorComponent = useCallback(() => <View style={styles.itemSeparator}></View>, []);
 
-  // ** USE EFFECT ** //
   useEffect(() => {
     fetch('https://dummyjson.com/carts')
       .then((res) => res.json())

@@ -1,4 +1,5 @@
 export enum Screen {
+  TabNavigator = 'TabNavigator',
   Home = 'Home',
   Detail = 'Detail',
   Settings = 'Settings',
@@ -9,10 +10,9 @@ export type TabParams = {
   [Screen.Settings]: undefined;
 };
 
-
 export type MainParamList = {
   TabNavigator: undefined;
   [Screen.Detail]: {
-    id: string;
+    id: number;
   };
 };
