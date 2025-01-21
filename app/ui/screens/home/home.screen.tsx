@@ -40,7 +40,6 @@ interface Props {
 const HomeScreen = ({ navigation }: Props) => {
   const [carts, setCarts] = useState<Cart[]>([]);
 
-
   const renderItem = useCallback<ListRenderItem<Cart>>(
     ({ item }) => {
       return (
@@ -50,15 +49,15 @@ const HomeScreen = ({ navigation }: Props) => {
             if (!item.id) {
               return;
             }
-
             navigation.navigate(Screen.Detail, {
               id: item.id,
+              idsArray: carts.map((el) => el.id),
             });
           }}
         />
       );
     },
-    [navigation]
+    [carts, navigation]
   );
 
   const ItemSeparatorComponent = useCallback(() => <View style={styles.itemSeparator}></View>, []);
