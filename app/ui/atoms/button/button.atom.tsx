@@ -1,33 +1,24 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { TouchableOpacity, Text } from "react-native";
+import styles from "./button.styles";
 
-const Button = ({ onPress, title }: { onPress: () => void; title: string }) => {
+interface ButtonProps {
+  onPress: () => void;
+  title: string;
+  isActive?: boolean;
+}
+
+const Button = ({ onPress, title, isActive = false }: ButtonProps) => {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
-      <Text style={styles.buttonText}>{title}</Text>
+    <TouchableOpacity
+      style={[styles.button, isActive && styles.buttonActive]}
+      onPress={onPress}
+    >
+      <Text style={[styles.buttonText, isActive && styles.buttonTextActive]}>
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#112341',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
 
 export default Button;
