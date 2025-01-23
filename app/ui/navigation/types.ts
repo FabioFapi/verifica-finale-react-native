@@ -1,25 +1,20 @@
 export enum Screen {
-  TabNavigator = 'TabNavigator',
-  Home = 'Home',
-  Detail = 'Detail',
-  Settings = 'Settings',
-  Favorites = 'Favorites',
+  Home = "Home",
+  Detail = "Detail",
+  TabNavigator = "TabNavigator",
+  Favorites = "Favorites",
 }
 
 export type TabParams = {
-  [Screen.Home]: {
-    hasFavoritesUpdated: boolean;
-  };
-  [Screen.Settings]: undefined;
-  [Screen.Favorites]: {
-    hasFavoritesUpdated: boolean;
-  };
+  [Screen.Home]: undefined;
+  [Screen.Detail]: undefined;
+  [Screen.Favorites]: undefined;
 };
 
 export type MainParamList = {
   TabNavigator: undefined;
   [Screen.Detail]: {
     id: number;
-    idsArray: number[];
   };
+  [Screen.Favorites]: undefined;
 };
