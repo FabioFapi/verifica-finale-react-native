@@ -1,61 +1,183 @@
-import React, { useCallback, useEffect } from 'react';
-import { FlatList, View } from 'react-native';
-import { styles } from './home.styles';
-import Card from '../../atoms/card/card.atom';
-import { useCarts } from '../hook/useCarts.facade';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { MainParamList, Screen } from '../../navigation/types';
+import React, { useCallback, useEffect, useState } from "react";
+import { Animated, FlatList, SafeAreaView, View } from "react-native";
+import { NavigationProp } from "@react-navigation/native";
+import { Screen } from "../../navigation/types";
+import Card from "../../atoms/products/products.atom";
+import styles from "./home.styles";
+import { useProducts } from "../../hook/useProducts.facade";
+import Button from "../../atoms/button/button.atom";
+import Pill from "../../atoms/pill/pill.atom";
+import Product from "../../../models/product";
+import ScrollView = Animated.ScrollView;
 
-interface Props {
-  navigation: NativeStackNavigationProp<MainParamList, Screen.Home>;
+type HomeScreenProps = {
+  navigation: NavigationProp<any>;
+};
+
+export enum SortType {
+  ASCENDING = "ASCENDING",
+  DESCENDING = "DESCENDING",
+  INITIAL = "INITIAL",
 }
 
-const HomeScreen = ({ navigation }: Props) => {
-  const { carts, favoriteIds, refreshCarts, loadFavorites, addFavorite } = useCarts();
+export const HomeScreen = ({ navigation }: HomeScreenProps) => {
+  const [category, setCategory] = useState<string>("all");
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [activeSort, setActiveSort] = useState<SortType | null>(null);
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([
+    { id: "all", name: "all" },
+  ]);
 
-  const renderItem = useCallback(
-    ({ item }) => (
+  const {
+    initialProducts,
+    favoriteIds,
+    refreshProducts,
+    loadFavorites,
+    addFavorite,
+  } = useProducts();
+
+  const onFilterApply = useCallback(
+    (type: SortType) => {
+      if (!filteredProducts) return;
+      let sorted;
+      switch (type) {
+        case SortType.ASCENDING:
+          sorted = [...filteredProducts].sort(
+            (a, b) => a.rating.rate - b.rating.rate,
+          );
+          break;
+        case SortType.DESCENDING:
+          sorted = [...filteredProducts].sort(
+            (a, b) => b.rating.rate - a.rating.rate,
+          );
+          break;
+        case SortType.INITIAL:
+          sorted =
+            category === "all"
+              ? initialProducts
+              : initialProducts.filter(
+                (product) => product.category === category,
+              );
+          break;
+      }
+      setFilteredProducts(sorted);
+    },
+    [filteredProducts, category, initialProducts],
+  );
+
+  const onCategorySelected = useCallback(
+    (selectedCategory: string) => {
+      setCategory(selectedCategory);
+      let filtered =
+        selectedCategory === "all"
+          ? initialProducts
+          : initialProducts.filter(
+            (product) => product.category === selectedCategory,
+          );
+
+      if (activeSort === SortType.ASCENDING) {
+        filtered = [...filtered].sort((a, b) => a.rating.rate - b.rating.rate);
+      } else if (activeSort === SortType.DESCENDING) {
+        filtered = [...filtered].sort((a, b) => b.rating.rate - a.rating.rate);
+      }
+
+      setFilteredProducts(filtered);
+    },
+    [initialProducts, activeSort],
+  );
+
+  const renderProduct = useCallback(
+    ({ item }: { item: Product }) => (
       <Card
-        cart={item}
+        product={item}
+        isFavorite={favoriteIds.includes(item.id)}
         onAddFavorite={() => addFavorite(item)}
-        selected={favoriteIds.includes(item.id)}
+        {...item}
         onPress={() => {
-          if (!item.id) {
-            return;
-          }
-          navigation.navigate(Screen.Detail, {
-            id: item.id,
-            idsArray: carts.map((el) => el.id),
-          });
+          if (!item.id) return;
+          navigation.navigate(Screen.Detail, { id: item.id });
         }}
       />
     ),
-    [addFavorite, carts, favoriteIds, navigation]
+    [favoriteIds, addFavorite, navigation],
   );
-
-  const ItemSeparatorComponent = useCallback(() => <View style={styles.itemSeparator}></View>, []);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      console.log('Favorites screen focused');
-      refreshCarts();
-      loadFavorites();
-    });
+    if (initialProducts) {
+      const categories = new Set(
+        initialProducts.map((product) => product.category),
+      );
+      const categoryList = Array.from(categories).map(
+        (categoryName, position) => ({
+          id: position.toString(),
+          name: categoryName,
+        }),
+      );
+      setCategories([{ id: "all", name: "all" }, ...categoryList]);
+    }
+  }, [initialProducts]);
 
-    return unsubscribe;
-  }, [loadFavorites, navigation, refreshCarts]);
+  useEffect(() => {
+    const loadData = async () => {
+      await Promise.all([refreshProducts(), loadFavorites()]);
+    };
+
+    return navigation.addListener("focus", () => {
+      loadData();
+    });
+  }, [refreshProducts, loadFavorites, navigation]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.sortingContainer}>
+        <Button
+          onPress={() => {
+            onFilterApply(SortType.INITIAL);
+            setActiveSort(null);
+          }}
+          title="Initial"
+          isActive={activeSort === null}
+        />
+        <Button
+          onPress={() => {
+            onFilterApply(SortType.ASCENDING);
+            setActiveSort(SortType.ASCENDING);
+          }}
+          title="Ascending"
+          isActive={activeSort === SortType.ASCENDING}
+        />
+        <Button
+          onPress={() => {
+            onFilterApply(SortType.DESCENDING);
+            setActiveSort(SortType.DESCENDING);
+          }}
+          title="Descending"
+          isActive={activeSort === SortType.DESCENDING}
+        />
+      </View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.pillsContainer}
+      >
+        {categories.map((cat) => (
+          <Pill
+            key={cat.id}
+            textContent={cat.name}
+            selected={category === cat.name}
+            onPress={() => onCategorySelected(cat.name)}
+          />
+        ))}
+      </ScrollView>
       <FlatList
-        showsVerticalScrollIndicator={false}
-        data={carts}
-        renderItem={renderItem}
+        data={filteredProducts}
+        renderItem={renderProduct}
         keyExtractor={(item) => item.id.toString()}
-        ItemSeparatorComponent={ItemSeparatorComponent}
+        contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
       />
-    </View>
+    </SafeAreaView>
   );
 };
-
-export default HomeScreen;

@@ -1,25 +1,33 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
+import { COLORS } from "../../values/color";
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 16,
+    backgroundColor: COLORS.blue.dark,
+    height: "100%",
   },
-  itemSeparator: {
-    height: 20,
+  listContainer: {
+    padding: 10,
+    gap: 20,
   },
-  detailItem: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+  row: {
+    justifyContent: "space-between",
   },
-  backButton: {
-    width: 24,
-    height: 24,
+  cardContainer: {
+    marginBottom: 10,
+  },
+  sortingContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 10,
+    backgroundColor: COLORS.blue.dark,
+  },
+  pillsContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    paddingTop: 5,
+    paddingBottom: 25,
   },
 });
+
+export default styles;
