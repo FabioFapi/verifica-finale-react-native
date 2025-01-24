@@ -8,6 +8,35 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.blue.dark,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.blue.dark,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: COLORS.blue.dark,
+  },
+  errorText: {
+    color: COLORS.white,
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: COLORS.accent.yellow,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  retryButtonText: {
+    color: COLORS.blue.dark,
+    fontWeight: '600',
+  },
   backButton: {
     marginLeft: 16,
   },
@@ -19,11 +48,13 @@ export default StyleSheet.create({
     height: width * 0.8,
     backgroundColor: COLORS.white,
     marginBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
+    width: '90%',
+    height: '90%',
+    resizeMode: 'contain',
   },
   detailsContainer: {
     padding: 20,
