@@ -1,5 +1,6 @@
 import React from "react";
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity } from "react-native";
+import ButtonText from "./button.text";
 import styles from "./button.styles";
 
 interface ButtonProps {
@@ -10,14 +11,15 @@ interface ButtonProps {
 
 const Button = ({ onPress, title, isActive = false }: ButtonProps) => {
   return (
-    <TouchableOpacity
-      style={[styles.button, isActive && styles.buttonActive]}
-      onPress={onPress}
-    >
-      <Text style={[styles.buttonText, isActive && styles.buttonTextActive]}>
-        {title}
-      </Text>
-    </TouchableOpacity>
+      <TouchableOpacity
+          style={[styles.button, isActive && styles.buttonActive]}
+          onPress={onPress}
+      >
+        <ButtonText
+            title={title}
+            isActive={isActive}
+        />
+      </TouchableOpacity>
   );
 };
 
