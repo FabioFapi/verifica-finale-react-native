@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { COLORS } from "../../values/color";
 
 const styles = StyleSheet.create({
   pill: {
@@ -10,12 +11,18 @@ const styles = StyleSheet.create({
     height: 32,
     justifyContent: "center",
     alignItems: "center",
+    minWidth: 60,
   },
   pillText: {
     fontSize: 14,
     fontWeight: "500",
     lineHeight: 20,
     textAlignVertical: "center",
+    textAlign: "center",
+  },
+  pillUnselected: {
+    borderColor: COLORS.neutral.light,
+    backgroundColor: "transparent",
   },
 });
 
