@@ -1,7 +1,8 @@
 import React, { memo } from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import styles from './products.styles';
 import { Ionicons } from '@expo/vector-icons';
+import styles from './products.styles';
+import { COLORS } from '../../values/color';
 
 interface Product {
   id: number;
@@ -33,37 +34,37 @@ interface CartCardProps {
 
 const Card = ({ cart, selected, onAddFavorite, onPress }: CartCardProps) => {
   return (
-    <>
-      <View style={styles.container}>
-        <View style={styles.containerHeader}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.titleStyle}>USER CART: {cart.userId}</Text>
+      <View>
+        <View style={styles.container}>
+          <View style={styles.containerHeader}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.titleStyle}>USER CART: {cart.userId}</Text>
+            </View>
+            <Ionicons
+                onPress={onAddFavorite}
+                name={selected ? 'heart-sharp' : 'heart-outline'}
+                size={28}
+                color={COLORS.accent.yellow}
+            />
           </View>
-          <Ionicons
-            onPress={onAddFavorite}
-            name={selected ? 'heart-sharp' : 'heart-outline'}
-            size={28}
-            color={'#ffd700'}
-          />
+          <View style={styles.containerImage}>
+            <Image
+                source={{
+                  uri: 'https://www.pngall.com/wp-content/uploads/5/Empty-Red-Shopping-Cart-PNG-Picture.png',
+                }}
+                style={styles.imageStyle}
+            />
+          </View>
+          <Text style={styles.infoText}>Cart products: {cart.totalProducts}</Text>
+          <Text style={styles.infoText}>Total cost: {cart.total} $</Text>
         </View>
-        <View style={styles.containerImage}>
-          <Image
-            source={{
-              uri: 'https://www.pngall.com/wp-content/uploads/5/Empty-Red-Shopping-Cart-PNG-Picture.png',
-            }}
-            style={styles.imageStyle}
-          />
-        </View>
-        <Text style={styles.genericCardText}>Cart products: {cart.totalProducts}</Text>
-        <Text style={[styles.genericCardText, styles.genericCardTextSpacing]}>
-          Total cost: {cart.total} $
-        </Text>
-      </View>
 
-      <TouchableOpacity style={styles.buyCartButton} onPress={onPress}>
-        <Text style={styles.genericCardText}>BUY CART {cart.discountedTotal} $</Text>
-      </TouchableOpacity>
-    </>
+        <TouchableOpacity style={styles.buyCartButton} onPress={onPress}>
+          <Text style={styles.buyCartButtonText}>
+            BUY CART {cart.discountedTotal} $
+          </Text>
+        </TouchableOpacity>
+      </View>
   );
 };
 
